@@ -23,20 +23,30 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
         
+        // Box
         // 20 cm
-        let cube = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0.01)
+//        let cube = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0.01)
+        
+        // Mars textures from
+        // https://www.solarsystemscope.com
+        let sphere = SCNSphere(radius: 0.2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.blue
+//        material.diffuse.contents = UIColor.blue
+        material.diffuse.contents = UIImage(named: "art.scnassets/mars.jpg")
         
-        cube.materials = [material]
+//        cube.materials = [material]
+        sphere.materials = [material]
         
         // position in space
         let node = SCNNode()
         node.position = SCNVector3(x: 0, y: 0.1, z: -0.5)
-        node.geometry = cube
+//        node.geometry = cube
+        node.geometry = sphere
+        
         
         sceneView.scene.rootNode.addChildNode(node)
+        sceneView.autoenablesDefaultLighting = true
         
 //        // Create a new scene
 //        let scene = SCNScene(named: "art.scnassets/ship.scn")!
