@@ -72,6 +72,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.run(configuration)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if let touch = touches.first {
+            
+            let touchLocation = touch.location(in: sceneView)
+            
+            // Convert 2D Touch location to 3D point
+            let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
+            
+            if !results.isEmpty {
+                print("Touch")
+            } else {
+                print("Out of plane")
+            }
+        }
+    }
+    
     // Give plane width and height
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         
