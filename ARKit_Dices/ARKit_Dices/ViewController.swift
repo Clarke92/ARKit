@@ -11,6 +11,9 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
+    
+    // Needed to spin alles dices at once
+    var dices = [SCNNode]()
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -95,17 +98,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                         z: hit.worldTransform.columns.3.z
                     )
                     
+                    dices.append(diceNode)
                     sceneView.scene.rootNode.addChildNode(diceNode)
                     
-                    // Rotation around the Y axis is not needed
-                    let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
-                    let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
-                    
-                    diceNode.runAction(SCNAction.rotateBy(
-                        x: CGFloat(randomX * 10),
-                        y: 0,
-                        z: CGFloat(randomZ  * 10),
-                        duration: 1))
+                    roll(dice: diceNode)
                 }
             }
         }
@@ -138,6 +134,35 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             return
         }
         
+    }
+    
+    func rollDices() {
+        if !dices.isEmpty {
+            for dice in dices {
+                roll(dice: dice)
+            }
+        }
+    }
+    
+    @IBAction func rollAgain(_ sender: UIBarButtonItem) {
+        rollDices()
+    }
+    
+    // Roll again if shake
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        rollDices()
+    }
+    
+    func roll(dice: SCNNode) {
+        // Rotation around the Y axis is not needed
+        let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
+        let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
+        
+        dice.runAction(SCNAction.rotateBy(
+            x: CGFloat(randomX * 10),
+            y: 0,
+            z: CGFloat(randomZ  * 10),
+            duration: 1))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
