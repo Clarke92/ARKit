@@ -81,10 +81,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // Convert 2D Touch location to 3D point
             let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
             
-            if !results.isEmpty {
-                print("Touch")
-            } else {
-                print("Out of plane")
+            // Check if plane was touched
+            if let hit = results.first {
+                
+                let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")
+                
+                if let diceNode = diceScene?.rootNode.childNode(withName: "Dice", recursively: true) {
+                    
+                    // Place cube on touched position
+                    diceNode.position = SCNVector3(
+                        x: hit.worldTransform.columns.3.x,
+                        y: hit.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
+                        z: hit.worldTransform.columns.3.z
+                    )
+                    
+                    sceneView.scene.rootNode.addChildNode(diceNode)
+                }
             }
         }
     }
