@@ -20,37 +20,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
-        
         // Set the view's delegate
         sceneView.delegate = self
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
         
-        // Box
-        // 20 cm
-//        let cube = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0.01)
-        
-        // Mars textures from
-        // https://www.solarsystemscope.com
-//        let sphere = SCNSphere(radius: 0.2)
-        
-//        let material = SCNMaterial()
-//        material.diffuse.contents = UIColor.blue
-//        material.diffuse.contents = UIImage(named: "art.scnassets/mars.jpg")
-        
-//        cube.materials = [material]
-//        sphere.materials = [material]
-        
-        // position in space
-//        let node = SCNNode()
-//        node.position = SCNVector3(x: 0, y: 0.1, z: -0.5)
-//        node.geometry = cube
-//        node.geometry = sphere
-        
-        
-//        sceneView.scene.rootNode.addChildNode(node)
         sceneView.autoenablesDefaultLighting = true
         
         // Create a new scene
@@ -86,24 +61,27 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             // Check if plane was touched
             if let hit = results.first {
-                
-                let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")
-                
-                if let diceNode = diceScene?.rootNode.childNode(withName: "Dice", recursively: true) {
-                    
-                    // Place cube on touched position
-                    diceNode.position = SCNVector3(
-                        x: hit.worldTransform.columns.3.x,
-                        y: hit.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
-                        z: hit.worldTransform.columns.3.z
-                    )
-                    
-                    dices.append(diceNode)
-                    sceneView.scene.rootNode.addChildNode(diceNode)
-                    
-                    roll(dice: diceNode)
-                }
+                appendDice(location: hit)
             }
+        }
+    }
+    
+    func appendDice(location hit : ARHitTestResult) {
+        let diceScene = SCNScene(named: "art.scnassets/diceCollada.scn")
+        
+        if let diceNode = diceScene?.rootNode.childNode(withName: "Dice", recursively: true) {
+            
+            // Place cube on touched position
+            diceNode.position = SCNVector3(
+                x: hit.worldTransform.columns.3.x,
+                y: hit.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
+                z: hit.worldTransform.columns.3.z
+            )
+            
+            dices.append(diceNode)
+            sceneView.scene.rootNode.addChildNode(diceNode)
+            
+            roll(dice: diceNode)
         }
     }
     
@@ -144,7 +122,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     @IBAction func reloadDices(_ sender: UIBarButtonItem) {
-        
         if !dices.isEmpty {
             for dice in dices {
                 dice.removeFromParentNode()
