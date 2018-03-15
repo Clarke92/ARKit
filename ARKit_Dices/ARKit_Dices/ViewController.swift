@@ -143,6 +143,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
         }
     }
+    @IBAction func reloadDices(_ sender: UIBarButtonItem) {
+        
+        if !dices.isEmpty {
+            for dice in dices {
+                dice.removeFromParentNode()
+            }
+        }
+    }
     
     @IBAction func rollAgain(_ sender: UIBarButtonItem) {
         rollDices()
